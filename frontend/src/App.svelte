@@ -1,21 +1,15 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import nytLogo from "./assets/nyt-logo.png";
-  import viteLogo from "/vite.svg";
-  import Counter from "./lib/Counter.svelte";
+  import { onMount } from 'svelte';
+  import nytLogo from './assets/nyt-logo.png'; // Added missing nytLogo import
+  import svelteLogo from './assets/svelte.svg';
+  import viteLogo from '/vite.svg';
+  import Counter from './lib/Counter.svelte';
 
-  let apiKey: string = "";
-
-  onMount(async () => {
-    try {
-      const res = await fetch("/api/key");
-      const data = await res.json();
-      apiKey = data.apiKey;
-    } catch (error) {
-      console.error("Failed to fetch API key:", error);
-    }
-  });
-
+  let apiKey: string = '';
+  let articles: any[] = []; // Array to store articles
+  let currentTime: string = '';
+  
+  // Date formatting for header
   const date = new Date();
   const options = {
     weekday: "long",
@@ -24,6 +18,30 @@
     day: "numeric",
   };
   const date_display = date.toLocaleDateString("en-US", options);
+  
+  onMount(async () => {
+    try {
+      // First fetch the API key
+      const keyRes = await fetch('/api/key');
+      if (!keyRes.ok) {
+        throw new Error(`HTTP error! status: ${keyRes.status}`);
+      }
+      const keyData = await keyRes.json();
+      apiKey = keyData.apiKey;
+      
+      // Then fetch the articles
+      const articlesRes = await fetch('/api/articles');
+      if (!articlesRes.ok) {
+        throw new Error(`HTTP error! status: ${articlesRes.status}`);
+      }
+      const articlesData = await articlesRes.json();
+      articles = articlesData.response?.docs || [];
+      console.log("Articles:", articles); // Log the articles to the console for debugging
+      currentTime = new Date().toISOString();
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  });
 </script>
 
 <header>
@@ -116,7 +134,7 @@
     <h2>Article 5</h2>
     <p>Lorem ipsum dolor sit amet consectetur adipiscing elit.</p>
     <!-- image of HTML5 validator pass  -->
-    <img src="..static/images/valid-html.png" alt="Valid HTML5" />
+    <img src="/images/valid-html.png" alt="Valid HTML5" />
   </article>
   <article>
     <h2>Article 6</h2>
