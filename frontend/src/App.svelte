@@ -61,8 +61,9 @@
     <article class="article-card">
       <h2>{article.headline.main}</h2>
       <p>{article.snippet}</p>
+      <p class="article-url"><a href={article.web_url} target="_blank">{article.web_url}</a></p>
       <p>Published on: {new Date(article.pub_date).toLocaleDateString()}</p>
-      <a href={article.web_url} target="_blank">Read more</a>
+      <a href={article.web_url} target="_blank" class="read-more">Read more</a>
     </article>
   {/each}
 </main>
