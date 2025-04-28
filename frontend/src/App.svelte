@@ -1,21 +1,10 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import nytLogo from "./assets/nyt-logo.png";
-  import viteLogo from "/vite.svg";
-  import Counter from "./lib/Counter.svelte";
+  import { onMount } from 'svelte';
+  import nytLogo from './assets/nyt-logo.png'; // Added missing nytLogo import
 
-  let apiKey: string = "";
+  let articles: any[] = []; // Array to store articles
 
-  onMount(async () => {
-    try {
-      const res = await fetch("/api/key");
-      const data = await res.json();
-      apiKey = data.apiKey;
-    } catch (error) {
-      console.error("Failed to fetch API key:", error);
-    }
-  });
-
+  // Date formatting for header
   const date = new Date();
   const options = {
     weekday: "long",
@@ -24,6 +13,21 @@
     day: "numeric",
   };
   const date_display = date.toLocaleDateString("en-US", options);
+  
+  onMount(async () => {
+    try {
+      
+      const articlesRes = await fetch('/api/articles');
+      if (!articlesRes.ok) {
+        throw new Error(`HTTP error! status: ${articlesRes.status}`);
+      }
+      const articlesData = await articlesRes.json();
+      articles = articlesData.response?.docs || [];
+      console.log("Articles JSON:", JSON.stringify(articles, null, 2)); // Log the articles JSON to the console for debugging
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  });
 </script>
 
 <header>
@@ -53,96 +57,15 @@
 <hr />
 <main>
   <!-- main content area displayed as dynamic grid layout -->
-  <article>
-    <h2>Article 1</h2>
-    <p>
-      Lorem ipsum dolor sit amet consectetur adipiscing elit. Amet consectetur
-      adipiscing elit quisque faucibus ex sapien. Quisque faucibus ex sapien
-      vitae pellentesque sem placerat. Vitae pellentesque sem placerat in id
-      cursus mi.
-    </p>
-    <a
-      title="Keith Weller/USDA, Public domain, via Wikimedia Commons"
-      href="https://commons.wikimedia.org/wiki/File:Cow_female_black_white.jpg"
-    >
-      <img
-        width="512"
-        alt="Black White cow in green grass field in farm (livestock)"
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Cow_female_black_white.jpg/512px-Cow_female_black_white.jpg?20230829033145"
-      />
-    </a>
-    <figcaption>
-      <em>Keith Weller/USDA, Public domain, via Wikimedia Commons</em>
-    </figcaption>
-  </article>
-  <article>
-    <h2>Article 2</h2>
-    <p>
-      Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet
-      consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque
-      faucibus ex sapien vitae pellentesque.
-    </p>
-    <p>
-      Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet
-      consectetur adipiscing elit quisque faucibus.
-    </p>
-  </article>
-  <article>
-    <h2>Article 3</h2>
-    <p>
-      Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet
-      consectetur adipiscing elit quisque faucibus.
-    </p>
-    <p>
-      Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet
-      consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque
-      faucibus ex sapien vitae pellentesque.
-    </p>
-  </article>
-  <article>
-    <h2>Article 4</h2>
-    <p>
-      Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet
-      consectetur adipiscing elit quisque faucibus.
-    </p>
-    <p>
-      Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet
-      consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque
-      faucibus ex sapien vitae pellentesque.
-    </p>
-    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit.</p>
-  </article>
-  <article>
-    <h2>Article 5</h2>
-    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit.</p>
-    <!-- image of HTML5 validator pass  -->
-    <img src="..static/images/valid-html.png" alt="Valid HTML5" />
-  </article>
-  <article>
-    <h2>Article 6</h2>
-    <p>
-      Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet
-      consectetur adipiscing elit quisque faucibus.
-    </p>
-    <p>
-      Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet
-      consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque
-      faucibus ex sapien vitae pellentesque.
-    </p>
-  </article>
-  <article>
-    <h2>Article 7</h2>
-    <p>
-      Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet
-      consectetur adipiscing elit quisque faucibus.
-    </p>
-    <p>
-      Lorem ipsum dolor sit amet consectetur adipiscing elit. Sit amet
-      consectetur adipiscing elit quisque faucibus ex. Adipiscing elit quisque
-      faucibus ex sapien vitae pellentesque.
-    </p>
-    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit.</p>
-  </article>
+  {#each articles as article}
+    <article class="article-card">
+      <h2>{article.headline.main}</h2>
+      <p>{article.snippet}</p>
+      <p class="article-url"><a href={article.web_url} target="_blank">{article.web_url}</a></p>
+      <p>Published on: {new Date(article.pub_date).toLocaleDateString()}</p>
+      <a href={article.web_url} target="_blank" class="read-more">Read more</a>
+    </article>
+  {/each}
 </main>
 <footer>
   <!-- footer for additonal information -->
