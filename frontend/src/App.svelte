@@ -1,12 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import nytLogo from './assets/nyt-logo.png'; // Added missing nytLogo import
+  import nytLogo from './assets/nyt-logo.png';
 
-  let articles: any[] = []; // Array to store articles
+  let articles: any[] = []; // Array to store fetched articles
 
-  // Date formatting for header
+  // Formatting for current datem, e.g. "Weekday, Month Day, Year"
   const date = new Date();
-  const options = {
+  const options: Intl.DateTimeFormatOptions = {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -23,7 +23,6 @@
       }
       const articlesData = await articlesRes.json();
       articles = articlesData.response?.docs || [];
-      console.log("Articles JSON:", JSON.stringify(articles, null, 2)); // Log the articles JSON to the console for debugging
     } catch (error) {
       console.error('Failed to fetch data:', error);
     }
@@ -56,12 +55,12 @@
 <hr />
 <hr />
 <main>
-  <!-- main content area displayed as dynamic grid layout -->
+  <!-- Main content displayed as a media-responsive grid -->
+  <!-- Iterate over retrieved articles -->
   {#each articles as article}
-    <article class="article-card">
+    <article>
       <h2>{article.headline.main}</h2>
       <p>{article.snippet}</p>
-      <p class="article-url"><a href={article.web_url} target="_blank">{article.web_url}</a></p>
       <p>Published on: {new Date(article.pub_date).toLocaleDateString()}</p>
       <a href={article.web_url} target="_blank" class="read-more">Read more</a>
     </article>
