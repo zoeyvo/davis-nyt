@@ -79,11 +79,7 @@
         />
       </a>
     </p>
-    <p>&copy; 2024 The New York Times</p>
-    <p>Zoey Vo</p>
-    <p>Text generated with:</p>
-    <a href="https://loremipsum.io/generator/" target="_blank"
-      >Lorem Ipsum Generator</a
-    >
+    <p>&copy; 2025 The New York Times</p>
+    <p>Zoey Vo, Loc Nguyen</p>
   </div>
 </footer>
