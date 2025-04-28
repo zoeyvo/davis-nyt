@@ -23,6 +23,7 @@
       }
       const articlesData = await articlesRes.json();
       articles = articlesData.response?.docs || [];
+      console.log('Fetched articles:', JSON.stringify(articles, null, 2));
     } catch (error) {
       console.error('Failed to fetch data:', error);
     }
@@ -36,20 +37,7 @@
     <div id="current-date">{date_display}</div>
   </div>
   <nav class="main-nav">
-    <ul>
-      <!-- list of potential pages -->
-      <li class="nav-item"><a href="#">U.S.</a></li>
-      <li class="nav-item"><a href="#">World</a></li>
-      <li class="nav-item"><a href="#">Business</a></li>
-      <li class="nav-item"><a href="#">Arts</a></li>
-      <li class="nav-item"><a href="#">Lifestyle</a></li>
-      <li class="nav-item"><a href="#">Opinion</a></li>
-      <li class="nav-item"><a href="#">Audio</a></li>
-      <li class="nav-item"><a href="#">Games</a></li>
-      <li class="nav-item"><a href="#">Cooking</a></li>
-      <li class="nav-item"><a href="#">Wirecutter</a></li>
-      <li class="nav-item"><a href="#">Atlantic</a></li>
-    </ul>
+    
   </nav>
 </header>
 <hr />
@@ -61,6 +49,8 @@
     <article>
       <h2>{article.headline.main}</h2>
       <p>{article.snippet}</p>
+      <p>{article.byline.original}</p>
+
       <p>Published on: {new Date(article.pub_date).toLocaleDateString()}</p>
       <a href={article.web_url} target="_blank" class="read-more">Read more</a>
     </article>
