@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, send_from_directory, request
 import os
 from flask_cors import CORS
-import requests
+import requests # required for making HTTP requests
 
 static_path = os.getenv('STATIC_PATH','static')
 template_path = os.getenv('TEMPLATE_PATH','templates')
@@ -13,31 +13,23 @@ CORS(app)
 def get_key():
     return jsonify({'apiKey': os.getenv('NYT_API_KEY')})
 
-@app.route('/api/articles', methods=['GET'])
+@app.route('/api/articles')
 def get_articles():
 
-    NYT_API_URL = "https://api.nytimes.com/svc/search/v2/articlesearch.json"
     api_key = os.getenv('NYT_API_KEY')
-
+    NYT_API_URL = "https://api.nytimes.com/svc/search/v2/articlesearch.json"
+    
     if not api_key:
-        print("Error: NYT_API_KEY is not set")
-        return jsonify({'error': 'API key not found'}), 500
+        return jsonify({'error': 'NYT_API_KEY is not set in .env'}), 500
 
     query = request.args.get('query', 'California')
-    fq = f'timesTag.location:("{query}")'
-    api_url = f"{NYT_API_URL}?fq={fq}&api-key={api_key}"
-
-    print(f"Requesting URL: {api_url}")  # Log the API URL
+    api_url = f"{NYT_API_URL}?q={query}&api-key={api_key}"
 
     try:
         response = requests.get(api_url)
-        print(f"Response Status Code: {response.status_code}")  # Log the status code
-        print(f"Response Content: {response.text}")  # Log the response content
-        response.raise_for_status()
         data = response.json()
         return jsonify(data)
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching articles: {e}")  # Log the error
         return jsonify({'error': str(e)}), 500
 
 @app.route('/')
