@@ -1,12 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import nytLogo from './assets/nyt-logo.png'; // Added missing nytLogo import
+  import nytLogo from './assets/nyt-logo.png';
 
-  let articles: any[] = []; // Array to store articles
+  let articles: any[] = []; // Array to store fetched articles
 
-  // Date formatting for header
+  // Formatting for current datem, e.g. "Weekday, Month Day, Year"
   const date = new Date();
-  const options = {
+  const options: Intl.DateTimeFormatOptions = {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -23,7 +23,7 @@
       }
       const articlesData = await articlesRes.json();
       articles = articlesData.response?.docs || [];
-      console.log("Articles JSON:", JSON.stringify(articles, null, 2)); // Log the articles JSON to the console for debugging
+      console.log('Fetched articles:', JSON.stringify(articles, null, 2));
     } catch (error) {
       console.error('Failed to fetch data:', error);
     }
@@ -37,31 +37,20 @@
     <div id="current-date">{date_display}</div>
   </div>
   <nav class="main-nav">
-    <ul>
-      <!-- list of potential pages -->
-      <li class="nav-item"><a href="#">U.S.</a></li>
-      <li class="nav-item"><a href="#">World</a></li>
-      <li class="nav-item"><a href="#">Business</a></li>
-      <li class="nav-item"><a href="#">Arts</a></li>
-      <li class="nav-item"><a href="#">Lifestyle</a></li>
-      <li class="nav-item"><a href="#">Opinion</a></li>
-      <li class="nav-item"><a href="#">Audio</a></li>
-      <li class="nav-item"><a href="#">Games</a></li>
-      <li class="nav-item"><a href="#">Cooking</a></li>
-      <li class="nav-item"><a href="#">Wirecutter</a></li>
-      <li class="nav-item"><a href="#">Atlantic</a></li>
-    </ul>
+    
   </nav>
 </header>
 <hr />
 <hr />
 <main>
-  <!-- main content area displayed as dynamic grid layout -->
+  <!-- Main content displayed as a media-responsive grid -->
+  <!-- Iterate over retrieved articles -->
   {#each articles as article}
-    <article class="article-card">
+    <article>
       <h2>{article.headline.main}</h2>
       <p>{article.snippet}</p>
-      <p class="article-url"><a href={article.web_url} target="_blank">{article.web_url}</a></p>
+      <p>{article.byline.original}</p>
+
       <p>Published on: {new Date(article.pub_date).toLocaleDateString()}</p>
       <a href={article.web_url} target="_blank" class="read-more">Read more</a>
     </article>
@@ -80,14 +69,7 @@
         />
       </a>
     </p>
-    <p>&copy; 2024 The New York Times</p>
-    <p>Zoey Vo</p>
-    <p>Text generated with:</p>
-    <a href="https://loremipsum.io/generator/" target="_blank"
-      >Lorem Ipsum Generator</a
-    >
+    <p>&copy; 2025 The New York Times</p>
+    <p>Zoey Vo, Loc Nguyen</p>
   </div>
 </footer>
-
-<style>
-</style>
