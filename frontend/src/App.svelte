@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import nytLogo from './assets/nyt-logo.png';
+  import { onMount } from "svelte";
+  import nytLogo from "./assets/nyt-logo.png";
 
   let articles: any[] = []; // Array to store fetched articles
 
@@ -13,19 +13,18 @@
     day: "numeric",
   };
   const date_display = date.toLocaleDateString("en-US", options);
-  
+
   onMount(async () => {
     try {
-      
-      const articlesRes = await fetch('/api/articles');
+      const articlesRes = await fetch("/api/articles");
       if (!articlesRes.ok) {
         throw new Error(`HTTP error! status: ${articlesRes.status}`);
       }
       const articlesData = await articlesRes.json();
       articles = articlesData.response?.docs || [];
-      console.log('Fetched articles:', JSON.stringify(articles, null, 2));
+      console.log("Fetched articles:", JSON.stringify(articles, null, 2));
     } catch (error) {
-      console.error('Failed to fetch data:', error);
+      console.error("Failed to fetch data:", error);
     }
   });
 </script>
@@ -37,18 +36,19 @@
     <div id="current-date">{date_display}</div>
   </div>
   <nav class="main-nav">
-    <ul> <!-- list of potential pages -->
-        <li class="nav-item"><a href="#">U.S.</a></li>
-        <li class="nav-item"><a href="#">World</a></li>
-        <li class="nav-item"><a href="#">Business</a></li>
-        <li class="nav-item"><a href="#">Arts</a></li>
-        <li class="nav-item"><a href="#">Lifestyle</a></li>
-        <li class="nav-item"><a href="#">Opinion</a></li>
-        <li class="nav-item"><a href="#">Audio</a></li>
-        <li class="nav-item"><a href="#">Games</a></li>
-        <li class="nav-item"><a href="#">Cooking</a></li>
-        <li class="nav-item"><a href="#">Wirecutter</a></li>
-        <li class="nav-item"><a href="#">Atlantic</a></li>
+    <ul>
+      <!-- list of potential pages -->
+      <li class="nav-item"><a href="#">U.S.</a></li>
+      <li class="nav-item"><a href="#">World</a></li>
+      <li class="nav-item"><a href="#">Business</a></li>
+      <li class="nav-item"><a href="#">Arts</a></li>
+      <li class="nav-item"><a href="#">Lifestyle</a></li>
+      <li class="nav-item"><a href="#">Opinion</a></li>
+      <li class="nav-item"><a href="#">Audio</a></li>
+      <li class="nav-item"><a href="#">Games</a></li>
+      <li class="nav-item"><a href="#">Cooking</a></li>
+      <li class="nav-item"><a href="#">Wirecutter</a></li>
+      <li class="nav-item"><a href="#">Atlantic</a></li>
     </ul>
   </nav>
 </header>
@@ -59,6 +59,10 @@
   <!-- Iterate over retrieved articles -->
   {#each articles as article}
     <article>
+      <img
+        src={article.multimedia.default.url}
+        alt={article.multimedia.caption}
+      />
       <h2>{article.headline.main}</h2>
       <p>{article.snippet}</p>
       <p>{article.byline.original}</p>
