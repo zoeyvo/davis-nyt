@@ -22,8 +22,13 @@ def get_articles():
     if not api_key:
         return jsonify({'error': 'NYT_API_KEY is not set in .env'}), 500
 
-    query = request.args.get('query', 'California')
-    api_url = f"{NYT_API_URL}?q={query}&api-key={api_key}"
+    # Query
+    query = request.args.get('query', 'Sacramento', 'Davis')
+    
+    # Filter to narrow location to California
+    filter = "timesTag.location%3ACalifornia"
+    
+    api_url = f"{NYT_API_URL}?q={query}&fq={filter}&api-key={api_key}"
 
     try:
         response = requests.get(api_url)
