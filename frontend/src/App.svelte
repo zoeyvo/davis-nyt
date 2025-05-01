@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import nytLogo from "./assets/nyt-logo.png";
 
-  let articles: any[] = []; // Array to store fetched articles
+  export let articles: any[] = []; // Array to store fetched articles
 
   // Formatting for current datem, e.g. "Weekday, Month Day, Year"
   const date = new Date();
