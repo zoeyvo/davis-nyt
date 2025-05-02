@@ -7,6 +7,7 @@
 
   export let articles: any[] = [];
   onMount(async () => {
+    // Articles fetched using backend API route in app.py
     articles = await getArticles();
   });
 </script>
