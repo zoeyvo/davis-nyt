@@ -1,31 +1,13 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import nytLogo from "./assets/nyt-logo.png";
+  import { getDate, getArticles } from "./script";
 
-  export let articles: any[] = []; // Array to store fetched articles
+  export let date_display = getDate();
 
-  // Formatting for current datem, e.g. "Weekday, Month Day, Year"
-  const date = new Date();
-  const options: Intl.DateTimeFormatOptions = {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  };
-  const date_display = date.toLocaleDateString("en-US", options);
-
+  export let articles: any[] = [];
   onMount(async () => {
-    try {
-      const articlesRes = await fetch("/api/articles");
-      if (!articlesRes.ok) {
-        throw new Error(`HTTP error! status: ${articlesRes.status}`);
-      }
-      const articlesData = await articlesRes.json();
-      articles = articlesData.response?.docs || [];
-      console.log("Fetched articles:", JSON.stringify(articles, null, 2));
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    }
+    articles = await getArticles();
   });
 </script>
 
